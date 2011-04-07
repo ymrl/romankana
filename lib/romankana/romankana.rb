@@ -82,6 +82,6 @@ class String
   end
   def to_katakana
     r = NKF.nkf('-wh2',RomanKana.romankana(self))
-    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(NKF.nkf("-wh1",r),Kconv.guess(self),Kconv::UTF8)
+    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(NKF.nkf("-wh2",r),Kconv.guess(self),Kconv::UTF8)
   end
 end
