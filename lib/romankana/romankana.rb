@@ -21,7 +21,7 @@ module RomanKana
       elsif buff.length >=2 and buff[0] == 'm' and buff[1] != /[bmp]/
         ret += 'ン'
         buff.shift
-      elsif buff.length >= 2 and buff[0] == buff[1]
+      elsif buff.length >= 2 and buff[0] == buff[1] and buff[0] =~ /[a-z]/
         ret += 'ッ'
         buff.shift
       elsif buff.length >= 3
