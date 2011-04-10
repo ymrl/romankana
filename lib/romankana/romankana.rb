@@ -37,12 +37,21 @@ module RomanKana
   def RomanKana.kanaroman str
     ret = [] 
     array = NKF.nkf('-wh2',str).split('')
-    buff = [array.shift]
-    i = 0
+    buff = [array.first]
+    i = 1
     while i <= array.length
-      if a = RomanKana::K2R_table[buff.join('')]
+      if a = RomanKana::K2R_table_2[buff.join('')]
         ret << a
         buff.clear
+        next if i == array.length
+      elsif buff.length >= 2 && a = RomanKana::K2R_table_1[buff[0,buff.length-1].join('')]
+        ret << a
+        (buff.length-1).times{buff.shift}
+        next if i == array.length
+      elsif i == array.length && a = RomanKana::K2R_table_1[buff.join('')]
+        ret << a
+        buff.clear
+        next if i == array.length
       elsif buff.length >= 2
         ret << buff.shift
         next
@@ -54,10 +63,11 @@ module RomanKana
     while a = ret.index('ッ')
       ret[a] = ret[a+1].split('').first
     end
-
     return ret.join('')
   end
 end
+
+
 class String
   def roman_to_hiragana
     r = self.toutf8.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?NKF.nkf("-wh1",RomanKana.romankana(e)):e}.join('')
@@ -85,3 +95,4 @@ class String
     Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(NKF.nkf("-wh2",r),Kconv.guess(self),Kconv::UTF8)
   end
 end
+

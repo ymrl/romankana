@@ -1,6 +1,6 @@
 #coding:utf-8
 module RomanKana
-  K2R_table = {
+  K2R_table_1 = {
     'ア' => 'a',
     'イ' => 'i',
     'ウ' => 'u',
@@ -74,6 +74,9 @@ module RomanKana
     'プ' => 'pu',
     'ペ' => 'pe',
     'ポ' => 'po',
+    'ー' => '',
+  }
+  K2R_table_2 = {
     'キャ' => 'kya',
     'キュ' => 'kyu',
     'キョ' => 'kyo',
@@ -116,6 +119,5 @@ module RomanKana
     'フィ' => 'fi',
     'フェ' => 'fe',
     'フォ' => 'fo',
-    'ー' => '',
   }
 end
