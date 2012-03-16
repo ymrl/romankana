@@ -8,5 +8,5 @@ require directory+'/romankana/k2r.rb'
 require directory+'/romankana/romankana.rb'
   
 module RomanKana
-  VERSION = '0.1.1'
+  VERSION = '0.1.2'
 end
