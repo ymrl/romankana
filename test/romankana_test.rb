@@ -1,13 +1,13 @@
 #!/bin/env ruby
 # -*- coding: utf-8 -*-
 
-# romakanaを設置するファイル構成に合わせて調整してね！
+# romankanaを設置するファイル構成に合わせて調整してね！
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'test/unit'
 require 'romankana'
 
-class RomakanaTest < Test::Unit::TestCase
+class RomankanaTest < Test::Unit::TestCase
   @@roma_data = {
     'A'=>['あ','ア'],
     'I'=>['い','イ'],
