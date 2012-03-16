@@ -122,5 +122,10 @@ class String
     r = NKF.nkf('-Wwh2',RomanKana.romankana(self))
     return RomanKana.set_encoding_of_before(self,r)
   end
+  def to_hankaku
+    r = NKF.nkf('-Z4xwW',RomanKana.convert_utf8(self))
+    puts r
+    return RomanKana.set_encoding_of_before(self,r)
+  end
 end
 
