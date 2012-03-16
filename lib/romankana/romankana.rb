@@ -7,8 +7,9 @@ require 'kconv'
 module RomanKana
 
   def RomanKana.romankana str
+    str = RomanKana.convert_utf8(str)
     ret = ''
-    array = NKF.nkf('-wZ0',str).downcase.split('')
+    array = NKF.nkf('-WwZ0',str).downcase.split('')
     buff = [array.shift]
     i = 0
     while i <= array.length
@@ -35,11 +36,12 @@ module RomanKana
   end
 
   def RomanKana.kanaroman str
+    str = RomanKana.convert_utf8(str)
     ret = [] 
-    array = NKF.nkf('-wh2',str).split('')
+    array = NKF.nkf('-Wwh2',str).split('')
     temp_array = []
     array.each{|elm|
-      if temp_array.size > 0 && elm =~ /[ャュョ]|[ァィゥェォ]/
+      if temp_array.size > 0 && elm =~ /[ャュョ]|[ァィゥェォ]/u
         temp_array[temp_array.size-1] +=  elm
       else
         temp_array.push(elm)
@@ -74,34 +76,51 @@ module RomanKana
     end
     return ret.join('')
   end
+  def RomanKana.set_encoding_of_before before, after
+    if RUBY_VERSION < "1.9"
+      return Kconv.guess(before) == Kconv::ASCII ? after : Kconv.kconv(after,Kconv.guess(before),Kconv::UTF8)
+    end
+    e = before.encoding
+    return (e == Encoding::US_ASCII or e == Encoding::ASCII_8BIT) ? after : Kconv.kconv(after,before.encoding,Encoding::UTF_8)
+  end
+  def RomanKana.convert_utf8 str
+    if RUBY_VERSION < "1.9"
+      return str.toutf8
+    else
+      return (str.encoding != Encoding::UTF_8) ? str.toutf8 : str 
+    end
+  end
 end
 
 
 class String
   def roman_to_hiragana
-    r = self.toutf8.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?NKF.nkf("-wh1",RomanKana.romankana(e)):e}.join('')
-    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(r,Kconv.guess(self),Kconv::UTF8)
+    r = self.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?NKF.nkf("-Wwh1",RomanKana.romankana(e)):e}.join('')
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def roman_to_katakana
-    r = self.toutf8.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?RomanKana.romankana(e):e}.join('')
-    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(r,Kconv.guess(self),Kconv::UTF8)
+    r = self.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?RomanKana.romankana(e):e}.join('')
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def katakana_to_roman
-    Kconv.kconv(self.toutf8.split(/([ァ-ヴ]+)/u).map{|e|e =~ /[ァ-ヴ]+/u?RomanKana.kanaroman(e):e}.join(''),Kconv.guess(self),Kconv::UTF8)
+    r = self.split(/([ァ-ヴ]+)/u).map{|e|e =~ /[ァ-ヴ]+/u?RomanKana.kanaroman(e):e}.join('')
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def hiragana_to_roman
-    Kconv.kconv(self.toutf8.split(/([ぁ-ん]+)/u).map{|e|e =~ /[ぁ-ん]+/u?NKF.nkf("-wh1",RomanKana.kanaroman(e)):e}.join(''),Kconv.guess(self),Kconv::UTF8)
+    r = self.split(/([ぁ-ゔ]+)/u).map{|e|e =~ /[ぁ-ゔ]+/u?NKF.nkf("-Wwh1",RomanKana.kanaroman(e)):e}.join('')
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def to_roman
-    Kconv.kconv(RomanKana.kanaroman(self),Kconv.guess(self),Kconv::UTF8)
+    r = RomanKana.kanaroman(self)
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def to_hiragana
-    r = NKF.nkf('-wh1',RomanKana.romankana(self))
-    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(NKF.nkf("-wh1",r),Kconv.guess(self),Kconv::UTF8)
+    r = NKF.nkf('-Wwh1',RomanKana.romankana(self))
+    return RomanKana.set_encoding_of_before(self,r)
   end
   def to_katakana
-    r = NKF.nkf('-wh2',RomanKana.romankana(self))
-    Kconv.guess(self) == Kconv::ASCII ? r : Kconv.kconv(NKF.nkf("-wh2",r),Kconv.guess(self),Kconv::UTF8)
+    r = NKF.nkf('-Wwh2',RomanKana.romankana(self))
+    return RomanKana.set_encoding_of_before(self,r)
   end
 end
 

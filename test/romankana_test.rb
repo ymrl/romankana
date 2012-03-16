@@ -392,11 +392,11 @@ class RomankanaTest < Test::Unit::TestCase
 #    'ふゃ'=>['fya','フャ'],
 #    'ふゅ'=>['fyu','フュ'],
 #    'ふょ'=>['fyo','フョ'],
-#    'ゔぁ'=>['va','ヴァ'],
-#    'ゔぃ'=>['vi','ヴィ'],
-#    'ゔ'=>['vu','ヴ'],
-#    'ゔぇ'=>['ve','ヴェ'],
-#    'ゔぉ'=>['vo','ヴォ'],
+    'ゔぁ'=>['va','ヴァ'],
+    'ゔぃ'=>['vi','ヴィ'],
+    'ゔ'=>['vu','ヴ'],
+    'ゔぇ'=>['ve','ヴェ'],
+    'ゔぉ'=>['vo','ヴォ'],
     'こうえんじ'=>['kouenji','コウエンジ'],
     'にしにっぽり'=>['nishinippori','ニシニッポリ'],
   }
@@ -516,11 +516,11 @@ class RomankanaTest < Test::Unit::TestCase
 #    'フャ'=>['fya','ふゃ'],
 #    'フュ'=>['fyu','ふゅ'],
 #    'フョ'=>['fyo','ふょ'],
-#    'ヴァ'=>['va','ゔぁ'],
-#    'ヴィ'=>['vi','ゔぃ'],
+    'ヴァ'=>['va','ゔぁ'],
+    'ヴィ'=>['vi','ゔぃ'],
     'ヴ'=>['vu','ゔ'],
-#    'ヴェ'=>['ve','ゔぇ'],
-#    'ヴォ'=>['vo','ゔぉ'],
+    'ヴェ'=>['ve','ゔぇ'],
+    'ヴォ'=>['vo','ゔぉ'],
     'コウエンジ'=>['kouenji','こうえんじ'],
     'ニシニッポリ'=>['nishinippori','にしにっぽり'],
   }  
@@ -530,7 +530,6 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n#{@method_name}\n"
     
     puts 'ローマ字→ひらがな(to_hiragana)'
-    to_hiragana_list = {}
     puts '{'
     @@roma_data.each{|key, value|
       assert_equal(value[0], key.to_hiragana)
@@ -544,7 +543,6 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n#{@method_name}\n"
     
     puts 'ローマ字→ひらがな(to_hiragana)'
-    to_hiragana_list = {}
     puts '{'
     @@roma_data.each{|key, value|
       assert_equal(value[0], key.roman_to_hiragana)
@@ -558,7 +556,6 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n#{@method_name}\n"
     
     puts 'ローマ字→カタカナ(to_katakana)'
-    to_hiragana_list = {}
     puts '{'
     @@roma_data.each{|key, value|
       assert_equal(value[1], key.to_katakana)
@@ -572,7 +569,6 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n#{@method_name}\n"
     
     puts 'ローマ字→カタカナ(roman_to_katakana)'
-    to_hiragana_list = {}
     puts '{'
     @@roma_data.each{|key, value|
       assert_equal(value[1], key.roman_to_katakana)
@@ -586,7 +582,6 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n#{@method_name}\n"
     
     puts 'ひらがな→ローマ字(to_roman)'
-    to_hiragana_list = {}
     puts '{'
     @@hiragana_data.each{|key, value|
       assert_equal(value[0], key.to_roman)
@@ -661,13 +656,4 @@ class RomankanaTest < Test::Unit::TestCase
     puts "\n\n"
   end  
   
-=begin  
-  def test_zzz
-    puts('{')
-    @@hiragana_data.each{|key, value|
-        puts "'#{value[1]}'=>['#{value[0]}','#{key}'],"
-    }
-    puts('}')
-  end
-=end
 end
