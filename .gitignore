@@ -2,3 +2,11 @@
 .*.swo
 *~
 pkg/*
+
+.DS_Store
+
+nbproject/private/rake-d.txt
+
+nbproject/project.properties
+
+nbproject/project.xml

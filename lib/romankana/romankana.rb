@@ -15,10 +15,10 @@ module RomanKana
       if a = RomanKana::R2K_table[buff.join('')]
         ret += a
         buff.clear
-      elsif buff.length >=2 and buff[0] == 'n' and buff[1] !~ /[aeiou]/
+      elsif buff.length >=2 and buff[0] == 'n' and buff[1] !~ /[aeiouy]/
         ret += 'ン'
         buff.shift
-      elsif buff.length >=2 and buff[0] == 'm' and buff[1] != /[bmp]/
+      elsif buff.length >=2 and buff[0] == 'm' and buff[1] =~ /[bmp]/
         ret += 'ン'
         buff.shift
       elsif buff.length >= 2 and buff[0] == buff[1] and buff[0] =~ /[a-z]/
@@ -37,6 +37,15 @@ module RomanKana
   def RomanKana.kanaroman str
     ret = [] 
     array = NKF.nkf('-wh2',str).split('')
+    temp_array = []
+    array.each{|elm|
+      if temp_array.size > 0 && elm =~ /[ャュョ]|[ァィゥェォ]/
+        temp_array[temp_array.size-1] +=  elm
+      else
+        temp_array.push(elm)
+      end
+    }
+    array = temp_array
     buff = [array.first]
     i = 1
     while i <= array.length
