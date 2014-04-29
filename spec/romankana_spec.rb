@@ -3,6 +3,98 @@ require 'spec_helper.rb'
 
 describe RomanKana do
 
+  describe "#find_kana_from_str" do
+    let(:given){ '' }
+    before do
+      @got = RomanKana.find_kana_from_str given
+    end
+
+    context 'non-alphabet string given' do
+      let(:given){ 'あ' }
+
+      it 'returns given string' do
+        expect(@got).to eq given
+      end
+    end
+
+    context 'string starts with nn given' do
+      let(:given){ 'nnya' }
+
+      it 'returns ン...' do
+        expect(@got).to eq 'ンヤ'
+      end
+    end
+
+    context 'string stats with n given' do
+      context 'next to consonant' do
+        let(:given){ 'nga' }
+
+        it 'returns ンガ' do
+          expect(@got).to eq 'ンガ'
+        end
+      end
+      context 'next to vowel' do
+        let(:given){ 'nya' }
+
+        it 'returns ニャ' do
+          expect(@got).to eq 'ニャ'
+        end
+      end
+    end
+
+    context 'string stats with m given' do
+      context 'means ン' do
+        let(:given){ 'mba' }
+
+        it 'returns ンバ' do
+          expect(@got).to eq 'ンバ'
+        end
+      end
+
+      context 'next to vowel' do
+        let(:given){ 'ma' }
+
+        it 'returns マ' do
+          expect(@got).to eq 'マ'
+        end
+      end
+
+      context 'nonsense' do
+        let(:given){ 'mdo' }
+
+        it 'returns mド' do
+          expect(@got).to eq 'mド'
+        end
+      end
+    end
+
+    context 'string starts with same 2 alphabet given' do
+      context 'that is consonant' do
+        let(:given){'tto'}
+
+        it 'returns ット' do
+          expect(@got).to eq 'ット'
+        end
+      end
+
+      context 'that is vowel' do
+        let(:given){'aada'}
+
+        it 'returns アアダ' do
+          expect(@got).to eq 'アアダ'
+        end
+      end
+    end
+
+    context 'long string given' do
+      let(:given){ 'aaaaaaaa' }
+
+      it 'returns アアアアアアア' do
+        expect(@got).to eq 'アアアアアアアア'
+      end
+    end
+  end
+
   describe "#romankana" do
     let(:given){ '' }
     before do

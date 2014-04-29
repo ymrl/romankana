@@ -7,7 +7,7 @@ require 'utils'
 
 module RomanKana
   def self.find_kana_from_str str
-    return '' if !str
+    return '' if !str || str.length == 0
     found = R2K_TABLE[str]
     if found
       return found
@@ -15,12 +15,12 @@ module RomanKana
       return "ン#{find_kana_from_str(str[2..-1])}"
     elsif str.length > 2 && str[0] == 'n' && str[1] !~ /[aiueoy]/
       return "ン#{find_kana_from_str(str[1..-1])}"
-    elsif str.length > 2 && str[0] == 'm' && str[1] != /[bmp]/
+    elsif str.length > 2 && str[0] == 'm' && str[1] =~ /[bmp]/
       return "ン#{find_kana_from_str(str[1..-1])}"
-    elsif str.length >= 2 && str[0] == str[1] && str[0] =~ /[a-z]/
+    elsif str.length >= 2 && str[0] == str[1] && str[0] =~ /[bcdfghjklmnpqrstvwxyz]/
       return "ッ#{find_kana_from_str(str[1..-1])}"
-    elsif str.length >= 3
-      return "#{str[0]}#{find_kana_from_str(str[1..-1])}"
+    elsif str.length >= 2
+      return "#{find_kana_from_str(str[0])}#{find_kana_from_str(str[1..-1])}"
     else
       return str
     end
