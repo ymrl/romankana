@@ -1,6 +1,6 @@
 #coding:utf-8
 module RomanKana
-  R2K_table = {
+  R2K_TABLE = {
     'a' => 'ア',
     'i' => 'イ',
     'u' => 'ウ',

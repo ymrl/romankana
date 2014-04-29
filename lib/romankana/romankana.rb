@@ -6,76 +6,71 @@ require 'kconv'
 
 module RomanKana
 
+  def self.find_kana_from_str str
+    return '' if !str
+    found = R2K_TABLE[str]
+    if found
+      return found
+    elsif str.length >= 2 && str[0] == 'n' && str[1] == 'n'
+      return "ン#{find_kana_from_str(str[2..-1])}"
+    elsif str.length > 2 && str[0] == 'n' && str[1] !~ /[aiueoy]/
+      return "ン#{find_kana_from_str(str[1..-1])}"
+    elsif str.length > 2 && str[0] == 'm' && str[1] != /[bmp]/
+      return "ン#{find_kana_from_str(str[1..-1])}"
+    elsif str.length >= 2 && str[0] == str[1] && str[0] =~ /[a-z]/
+      return "ッ#{find_kana_from_str(str[1..-1])}"
+    elsif str.length >= 3
+      return "#{str[0]}#{find_kana_from_str(str[1..-1])}"
+    else
+      return str
+    end
+  end
+
   def RomanKana.romankana str
     str = RomanKana.convert_utf8(str)
     ret = ''
-    array = NKF.nkf('-WwZ0',str).downcase.split('')
-    buff = [array.shift]
-    i = 0
-    while i <= array.length
-      if a = RomanKana::R2K_table[buff.join('')]
-        ret += a
-        buff.clear
-      elsif buff.length >=2 and buff[0] == 'n' and buff[1] !~ /[aeiouy]/
-        ret += 'ン'
-        buff.shift
-      elsif buff.length >=2 and buff[0] == 'm' and buff[1] =~ /[bmp]/
-        ret += 'ン'
-        buff.shift
-      elsif buff.length >= 2 and buff[0] == buff[1] and buff[0] =~ /[a-z]/
-        ret += 'ッ'
-        buff.shift
-      elsif buff.length >= 3
-        ret += buff.shift
-        next
-      end
-      buff << array[i]
-      i += 1
-    end
-    return ret+buff.join('')
+    array = NKF.nkf('-WwZ0',str).downcase.split(/([^a-z])/).map do |e|
+        e.split(/([^aiueo]*[aiueo])/).delete_if{|e|e.length == 0}
+      end.flatten
+    ret = array.map{|e| find_kana_from_str e }
+    return ret.join('')
   end
 
   def RomanKana.kanaroman str
     str = RomanKana.convert_utf8(str)
-    ret = [] 
-    array = NKF.nkf('-Wwh2',str).split('')
-    temp_array = []
-    array.each{|elm|
-      if temp_array.size > 0 && elm =~ /[ャュョ]|[ァィゥェォ]/u
-        temp_array[temp_array.size-1] +=  elm
-      else
-        temp_array.push(elm)
+    ret = nil
+
+    temp = NKF.nkf('-Wwh2',str).split('')
+    array = []
+    temp.each_with_index do |s,i|
+      if i + 1 < temp.length
+        next_str = temp[i+1]
+        if next_str =~ /[ァィゥェォャュョ]/u
+          s = "#{s}#{next_str}"
+          temp[i+1] = nil
+        end
       end
-    }
-    array = temp_array
-    buff = [array.first]
-    i = 1
-    while i <= array.length
-      if a = RomanKana::K2R_table_2[buff.join('')]
-        ret << a
-        buff.clear
-        next if i == array.length
-      elsif buff.length >= 2 && a = RomanKana::K2R_table_1[buff[0,buff.length-1].join('')]
-        ret << a
-        (buff.length-1).times{buff.shift}
-        next if i == array.length
-      elsif i == array.length && a = RomanKana::K2R_table_1[buff.join('')]
-        ret << a
-        buff.clear
-        next if i == array.length
-      elsif buff.length >= 2
-        ret << buff.shift
-        next
+      array.push s if s
+    end
+
+    ret = array.map{|e| K2R_TABLE[e] || e }
+    ret.each_with_index do |s,i|
+      if s == 'ッ'
+        if i + 1 < ret.length
+          c = ret[i+1].split('').first
+          ret[i] = c if c !~ /[aiueo]/
+        end
+      elsif s == 'ー'
+        if i - 1 >= 0
+          c = ret[i-1].split('').last
+          ret[i] = c if c =~ /[aiueo]/
+        end
       end
-      buff << array[i]
-      i += 1
     end
-    ret += buff
-    while a = ret.index('ッ')
-      ret[a] = ret[a+1].split('').first
-    end
+
     return ret.join('')
   end
+
   def RomanKana.set_encoding_of_before before, after
     if RUBY_VERSION < "1.9"
       return Kconv.guess(before) == Kconv::ASCII ? after : Kconv.kconv(after,Kconv.guess(before),Kconv::UTF8)
