@@ -72,18 +72,11 @@ module RomanKana
   end
 
   def RomanKana.set_encoding_of_before before, after
-    if RUBY_VERSION < "1.9"
-      return Kconv.guess(before) == Kconv::ASCII ? after : Kconv.kconv(after,Kconv.guess(before),Kconv::UTF8)
-    end
     e = before.encoding
     return (e == Encoding::US_ASCII or e == Encoding::ASCII_8BIT) ? after : after.encode(e)
   end
   def RomanKana.convert_utf8 str
-    if RUBY_VERSION < "1.9"
-      return str.toutf8
-    else
-      return (str.encoding != Encoding::UTF_8) ? str.encode(Encoding::UTF_8) : str 
-    end
+    return (str.encoding != Encoding::UTF_8) ? str.encode(Encoding::UTF_8) : str
   end
 end
 
