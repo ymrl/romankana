@@ -1,3 +1,5 @@
+require 'coveralls'
+Coveralls.wear!
 begin
   require 'rspec'
 rescue LoadError

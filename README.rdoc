@@ -1,5 +1,7 @@
 = RomanKana:
 {<img src="https://travis-ci.org/ymrl/romankana.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/ymrl/romankana]
+{<img src="https://coveralls.io/repos/ymrl/romankana/badge.png" alt="Coverage Status" />}[https://coveralls.io/r/ymrl/romankana]
+
 
 * https://github.com/ymrl/romankana
 
