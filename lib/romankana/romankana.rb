@@ -3,9 +3,9 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'kconv'
+require 'utils'
 
 module RomanKana
-
   def self.find_kana_from_str str
     return '' if !str
     found = R2K_TABLE[str]
@@ -26,8 +26,8 @@ module RomanKana
     end
   end
 
-  def RomanKana.romankana str
-    str = RomanKana.convert_utf8(str)
+  def self.romankana str
+    str = RomanKana::Utils.convert_utf8(str)
     ret = ''
     array = NKF.nkf('-WwZ0',str).downcase.split(/([^a-z])/).map do |e|
         e.split(/([^aiueo]*[aiueo])/).delete_if{|e|e.length == 0}
@@ -36,8 +36,8 @@ module RomanKana
     return ret.join('')
   end
 
-  def RomanKana.kanaroman str
-    str = RomanKana.convert_utf8(str)
+  def self.kanaroman str
+    str = RomanKana::Utils.convert_utf8(str)
     ret = nil
 
     temp = NKF.nkf('-Wwh2',str).split('')
@@ -67,52 +67,6 @@ module RomanKana
         end
       end
     end
-
     return ret.join('')
   end
-
-  def RomanKana.set_encoding_of_before before, after
-    e = before.encoding
-    return (e == Encoding::US_ASCII or e == Encoding::ASCII_8BIT) ? after : after.encode(e)
-  end
-  def RomanKana.convert_utf8 str
-    return (str.encoding != Encoding::UTF_8) ? str.encode(Encoding::UTF_8) : str
-  end
 end
-
-
-class String
-  def roman_to_hiragana
-    r = self.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?NKF.nkf("-Wwh1",RomanKana.romankana(e)):e}.join('')
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def roman_to_katakana
-    r = self.split(/([a-zA-Z]+)/u).map{|e|e =~ /[a-zA-Z]+/u?RomanKana.romankana(e):e}.join('')
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def katakana_to_roman
-    r = self.split(/([ァ-ヴ]+)/u).map{|e|e =~ /[ァ-ヴ]+/u?RomanKana.kanaroman(e):e}.join('')
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def hiragana_to_roman
-    r = self.split(/([ぁ-ゔ]+)/u).map{|e|e =~ /[ぁ-ゔ]+/u?NKF.nkf("-Wwh1",RomanKana.kanaroman(e)):e}.join('')
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def to_roman
-    r = RomanKana.kanaroman(self)
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def to_hiragana
-    r = NKF.nkf('-Wwh1',RomanKana.romankana(self))
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def to_katakana
-    r = NKF.nkf('-Wwh2',RomanKana.romankana(self))
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-  def to_hankaku
-    r = NKF.nkf('-Z4xwW',RomanKana.convert_utf8(self))
-    return RomanKana.set_encoding_of_before(self,r)
-  end
-end
-

@@ -5,7 +5,9 @@ $:.unshift(File.dirname(__FILE__)) unless
 directory = File.expand_path(File.dirname(__FILE__))
 require directory+'/romankana/r2k.rb'
 require directory+'/romankana/k2r.rb'
+require directory+'/romankana/utils.rb'
 require directory+'/romankana/romankana.rb'
+require directory+'/romankana/string.rb'
 require directory+'/romankana/version.rb'
 
 module RomanKana
