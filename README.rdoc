@@ -26,8 +26,7 @@ Roman Alphabet <-> Japanese Hiragana/Katkakana Convert Library for Ruby
 
 == REQUIREMENTS:
 
-* ruby (VERSION >= 1.8.7)
-	* but 1.8 makes some encoding erros caused by NKF. please use on 1.9
+* ruby (VERSION >= 1.9)
 
 == INSTALL:
  gem install romankana

@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/ymrl/romankana"
   spec.license       = "MIT"
+  spec.required_ruby_version = ">= 1.9"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
