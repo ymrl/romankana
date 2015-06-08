@@ -1,5 +1,6 @@
 #coding:UTF-8
 require 'spec_helper'
+require 'romankana/string'
 describe String do
 
   describe '#roman_to_hiragana' do
